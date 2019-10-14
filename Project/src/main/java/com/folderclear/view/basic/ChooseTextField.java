@@ -22,6 +22,7 @@ public abstract class ChooseTextField<T> extends BasicTextField {
 	public static Dimension DEFAULT_DIMENSION = new Dimension(
 			GlobalSize.MAINWINDTH - GlobalSize.MARGIN * 4 - GlobalSize.BTNWINDTH, GlobalSize.BTNHEIGHT);
 	private BasicButton choose = null;// 选择文件夹按钮
+	private String previousPath = null;
 
 	public ChooseTextField() {
 		super();
@@ -40,9 +41,22 @@ public abstract class ChooseTextField<T> extends BasicTextField {
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(final ActionEvent actionevent) {
-				new BasicFileOpenChooser(null, null, BasicFileOpenChooser.DIRECTORIES_ONLY) {
+				String temppath = null;
+				if (previousPath != null) {
+					int endindex = previousPath.length();
+					if (!previousPath.endsWith(File.separator)) {
+						temppath = previousPath.substring(0, previousPath.length() - 1);
+					}
+					endindex = temppath.lastIndexOf(File.separator);
+					temppath = temppath.substring(0, endindex);
+					if (!new File(temppath).exists()) {
+						temppath = null;
+					}
+				}
+				new BasicFileOpenChooser(temppath, null, BasicFileOpenChooser.DIRECTORIES_ONLY) {
 					@Override
 					public void handleOpen(String filepath) {
+						setPreviousPath(filepath);
 						setText(filepath);
 						handleClick(actionevent, filepath);
 					}
@@ -58,5 +72,13 @@ public abstract class ChooseTextField<T> extends BasicTextField {
 	}
 
 	public abstract void handleClick(ActionEvent actionevent, String filepath);
+
+	public String getPreviousPath() {
+		return previousPath;
+	}
+
+	public void setPreviousPath(String previousPath) {
+		this.previousPath = previousPath;
+	}
 
 }
