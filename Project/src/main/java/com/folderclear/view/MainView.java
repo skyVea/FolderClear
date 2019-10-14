@@ -36,6 +36,7 @@ import com.folderclear.view.datatable.DataTablePanel;
 import com.folderclear.view.folderselector.FolderSelecterPanel;
 import com.folderclear.view.loadplan.LoadPlanPanel;
 import com.folderclear.view.menu.MenuPanel;
+import com.folderclear.vo.ConfigVO;
 
 public class MainView extends JFrame implements WindowStateListener, ComponentListener, WindowListener {
 	public JPanel mainPanel = null;
@@ -57,11 +58,11 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 	private static final long serialVersionUID = 1L;
 
 	public MainView() throws FileNotFoundException, IOException {
-		Object[][] tabledata = initData();
-		initUI(tabledata);
+		initUI();// 初始化UI
+		readPlanDataAction(bo.readConfig().getDefaultPlan());// 载入默认方案
 	}
 
-	public void initUI(Object[][] tabledata) throws FileNotFoundException, IOException {
+	public void initUI() throws FileNotFoundException, IOException {
 		setTitle(defaultTitle);
 		setBounds(GlobalSize.SCREENWINDTH / 2 - GlobalSize.MAINWINDTH / 2,
 				GlobalSize.SCREENHEIGHT / 2 - GlobalSize.MAINWINDTH / 2, GlobalSize.MAINWINDTH, GlobalSize.MAINHEIGHT); // 设置窗口的属性
@@ -75,7 +76,7 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 		mainPanel.setLayout(borderLayout);
 		add(mainPanel);
 		initTop();
-		initCenter(tabledata);
+		initCenter();
 		initBottom();
 		setVisible(true);
 	}
@@ -110,13 +111,13 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 	}
 
 	// 中布局
-	public void initCenter(Object[][] data) throws FileNotFoundException, IOException {
+	public void initCenter() throws FileNotFoundException, IOException {
 		centerPanel = new JPanel();
 		centerPanel.setBackground(GlobalColor.MAINGRAY);
 		BoxLayout boxLayout = new BoxLayout(centerPanel, BoxLayout.Y_AXIS);
 		centerPanel.setLayout(boxLayout);
 		mainPanel.add("Center", centerPanel);
-		dTableView = new DataTablePanel(data, columnNames) {
+		dTableView = new DataTablePanel(null, columnNames) {
 			@Override
 			public void removeBtnAction(ActionEvent e) {
 				removeAction(e);
@@ -204,6 +205,15 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 
 	// 关闭按钮
 	public void closeAction(ActionEvent e) {
+		ConfigVO vo = new ConfigVO();
+		vo.setDefaultPlan(BO.currentPlanpath);
+		try {
+			bo.writeConfig(vo);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
 		if (BO.isModify) {
 			createSaveDialog(new AfterActionCallBack() {
 				@Override
@@ -229,6 +239,9 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 
 	// 读取方案，更新主界面UI活动
 	private void readPlanDataAction(String filepath) {
+		if (StringUtils.isEmpty(filepath)) {
+			return;
+		}
 		try {
 			Object[][] data = null;
 			data = bo.readData(filepath);
