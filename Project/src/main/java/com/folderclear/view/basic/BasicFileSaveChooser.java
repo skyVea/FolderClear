@@ -15,7 +15,7 @@ public abstract class BasicFileSaveChooser extends JFileChooser {
 		createUI(filetype, mode);
 	}
 
-	private void createUI(String filetype, int mode) {
+	private void createUI(final String filetype, int mode) {
 		addChoosableFileFilter(new FileFilter() {
 			@Override
 			public String getDescription() {

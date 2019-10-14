@@ -118,7 +118,7 @@ public abstract class MenuPanel extends Panel {
 		return jBar;
 	}
 
-	public void itemActionListener(JMenuItem item) {
+	public void itemActionListener(final JMenuItem item) {
 		item.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -140,7 +140,7 @@ public abstract class MenuPanel extends Panel {
 
 	public abstract void saveAsAction();
 
-	public void menuActionListener(JMenu menu) {
+	public void menuActionListener(final JMenu menu) {
 		menu.addMenuListener(new MenuListener() {
 
 			@Override
@@ -159,7 +159,7 @@ public abstract class MenuPanel extends Panel {
 		});
 	}
 
-	public void menuMouseListener(JMenu menu) {
+	public void menuMouseListener(final JMenu menu) {
 		menu.addMouseListener(new MouseListener() {
 
 			@Override

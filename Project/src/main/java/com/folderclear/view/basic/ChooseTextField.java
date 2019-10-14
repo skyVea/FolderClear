@@ -39,7 +39,7 @@ public abstract class ChooseTextField<T> extends BasicTextField {
 	private void chooseBtnActionListener(BasicButton button) {
 		button.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent actionevent) {
+			public void actionPerformed(final ActionEvent actionevent) {
 				new BasicFileOpenChooser(null, null, BasicFileOpenChooser.DIRECTORIES_ONLY) {
 					@Override
 					public void handleOpen(String filepath) {

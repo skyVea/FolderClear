@@ -1,6 +1,7 @@
 package com.folderclear.util;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.JarURLConnection;
@@ -35,7 +36,8 @@ public class PathUtil {
 	}
 
 	public static URL getJarURL(String jarPath) throws MalformedURLException {
-//		String jarPath = PathUtil.class.getProtectionDomain().getCodeSource().getLocation().getFile();
+		// String jarPath =
+		// PathUtil.class.getProtectionDomain().getCodeSource().getLocation().getFile();
 		URL url = new URL("jar:file" + jarPath + "!/resources/test.properties");
 		return url;
 	}
@@ -68,7 +70,7 @@ public class PathUtil {
 	 * @return 文件路径
 	 */
 	public static Set<String> getURLFromPkg(String pkg, String suffix, boolean scanJarFile) {
-		Set<String> pckpaths = new LinkedHashSet<>();
+		Set<String> pckpaths = new LinkedHashSet<String>();
 		String pkgDirName = pkg.replace('.', '/');
 		try {
 			Enumeration<URL> urls = PathUtil.class.getClassLoader().getResources(pkgDirName);
@@ -100,7 +102,7 @@ public class PathUtil {
 	 * @param classes
 	 *            保存包路径下指定后缀path的集合
 	 */
-	private static void findPKGPathByFile(String pkgName, String pkgPath, Set<String> paths, String suffix,
+	private static void findPKGPathByFile(String pkgName, String pkgPath, Set<String> paths, final String suffix,
 			boolean scanJar) {
 		File dir = new File(pkgPath);
 		if (!dir.exists() || !dir.isDirectory()) {
@@ -108,9 +110,17 @@ public class PathUtil {
 		}
 
 		// 过滤获取目录，or class文件
-		File[] dirfiles = dir.listFiles(pathname -> pathname.isDirectory() || pathname.getName().endsWith(suffix)
-				|| pathname.getName().endsWith(".jar"));
-
+		// File[] dirfiles = dir.listFiles(pathname -> pathname.isDirectory() ||
+		// pathname.getName().endsWith(suffix)
+		// || pathname.getName().endsWith(".jar"));
+		File[] dirfiles = dir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				// TODO Auto-generated method stub
+				return pathname.isDirectory() || pathname.getName().endsWith(suffix)
+						|| pathname.getName().endsWith(".jar");
+			}
+		});
 		if (dirfiles == null || dirfiles.length == 0) {
 			return;
 		}
@@ -172,7 +182,7 @@ public class PathUtil {
 	 * @return
 	 */
 	public static Set<Class<?>> getClassFromPkg(String pkg) {
-		Set<Class<?>> classes = new LinkedHashSet<>();
+		Set<Class<?>> classes = new LinkedHashSet<Class<?>>();
 		String pkgDirName = pkg.replace('.', '/');
 		try {
 			Enumeration<URL> urls = PathUtil.class.getClassLoader().getResources(pkgDirName);
@@ -248,12 +258,21 @@ public class PathUtil {
 		}
 
 		// 过滤获取目录，or class文件
-		File[] dirfiles = dir.listFiles(pathname -> pathname.isDirectory() || pathname.getName().endsWith("class"));
-
+		// File[] dirfiles = dir.listFiles(pathname -> pathname.isDirectory() ||
+		// pathname.getName().endsWith("class"));
+		//
+		// if (dirfiles == null || dirfiles.length == 0) {
+		// return;
+		// }
+		File[] dirfiles = dir.listFiles(new FileFilter() {
+			@Override
+			public boolean accept(File pathname) {
+				return pathname.isDirectory() || pathname.getName().endsWith("class");
+			}
+		});
 		if (dirfiles == null || dirfiles.length == 0) {
 			return;
 		}
-
 		String className;
 		Class clz;
 		for (File f : dirfiles) {

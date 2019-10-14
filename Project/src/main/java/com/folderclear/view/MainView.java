@@ -355,10 +355,10 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 	}
 
 	// 保存弹窗
-	private void createSaveDialog(AfterActionCallBack callBack, String message) {
-		BasicButton yesbtn = new BasicButton("是");
-		BasicButton nobtn = new BasicButton("否");
-		BasicButton canclebtn = new BasicButton("取消");
+	private void createSaveDialog(final AfterActionCallBack callBack, String message) {
+		final BasicButton yesbtn = new BasicButton("是");
+		final BasicButton nobtn = new BasicButton("否");
+		final BasicButton canclebtn = new BasicButton("取消");
 		BasicDialog closeDialog = new BasicDialog(null, "消息", message, yesbtn, nobtn, canclebtn) {
 			@Override
 			public void buttonAction(ActionEvent e) {
