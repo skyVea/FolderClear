@@ -10,6 +10,7 @@ import java.awt.event.ComponentListener;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.awt.event.WindowStateListener;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -205,25 +206,18 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 
 	// 关闭按钮
 	public void closeAction(ActionEvent e) {
-		ConfigVO vo = new ConfigVO();
-		vo.setDefaultPlan(BO.currentPlanpath);
-		try {
-			bo.writeConfig(vo);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
 		if (BO.isModify) {
 			createSaveDialog(new AfterActionCallBack() {
 				@Override
 				public void yesAction() {
 					saveBtnAction();
+					saveDefaultPlan();
 					System.exit(0);// 退出
 				}
 
 				@Override
 				public void noAction() {
+					saveDefaultPlan();
 					System.exit(0);// 退出
 				}
 
@@ -233,8 +227,10 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 				}
 			}, "有数据修改,是否保存当前方案？");
 		} else {
+			saveDefaultPlan();
 			System.exit(0);// 退出
 		}
+
 	}
 
 	// 读取方案，更新主界面UI活动
@@ -399,6 +395,20 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 		public void noAction();
 
 		public void cancleAction();
+	}
+
+	private void saveDefaultPlan() {
+		if (!StringUtils.isEmpty(BO.currentPlanpath) && new File(BO.currentPlanpath).exists()) {
+			ConfigVO vo = new ConfigVO();
+			vo.setDefaultPlan(BO.currentPlanpath);
+			try {
+				bo.writeConfig(vo);
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+		}
 	}
 
 	@Override

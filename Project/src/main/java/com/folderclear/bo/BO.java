@@ -33,9 +33,13 @@ public class BO {
 
 	// 获取默认配置
 	public ConfigVO readConfig() throws FileNotFoundException, IOException {
+		File file = new File(GlobalPath.CONFIGFILE);
+		if (!file.exists()) {
+			FileOutputStream fileOutputStream = new FileOutputStream(file);
+			fileOutputStream.close();
+		}
 		ConfigVO configVO = new ConfigVO();
 		Properties properties = new Properties();
-		File file = new File(GlobalPath.CONFIGFILE);
 		properties.load(new FileInputStream(file));
 		if (properties.containsKey("defaultPlan")) {
 			configVO.setDefaultPlan((String) properties.get("defaultPlan"));
