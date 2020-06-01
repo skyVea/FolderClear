@@ -5,7 +5,9 @@ import java.awt.FlowLayout;
 import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -14,6 +16,7 @@ import javax.swing.table.DefaultTableModel;
 
 import com.folderclear.constant.GlobalPath;
 import com.folderclear.constant.GlobalSize;
+import com.folderclear.util.ImageUtil;
 import com.folderclear.view.basic.BasicButton;
 import com.folderclear.view.basic.BasicPanel;
 import com.folderclear.view.basic.BasicScrollPane;
@@ -47,7 +50,16 @@ public abstract class DataTablePanel extends BasicPanel {
 	}
 
 	private void createRemoveBtn() {
-		removeBtn = new BasicButton(new ImageIcon(GlobalPath.ICON + File.separator + "trash.gif"));
+		BufferedImage bi = null;
+		try {
+			bi = ImageUtil.createImageIcon(this.getClass().getClassLoader()
+					.getResourceAsStream(GlobalPath.ICON +"/trash.gif"));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		ImageIcon ii = new ImageIcon(bi);
+		removeBtn = new BasicButton(ii);
 		removeBtnListener(removeBtn);
 		add(removeBtn);
 	}

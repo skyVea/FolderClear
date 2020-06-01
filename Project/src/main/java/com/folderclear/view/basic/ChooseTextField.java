@@ -4,19 +4,15 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
 
-import com.folderclear.constant.GlobalBorder;
-import com.folderclear.constant.GlobalColor;
 import com.folderclear.constant.GlobalPath;
 import com.folderclear.constant.GlobalSize;
+import com.folderclear.util.ImageUtil;
 
 public abstract class ChooseTextField<T> extends BasicTextField {
 	public static Dimension DEFAULT_DIMENSION = new Dimension(
@@ -32,7 +28,15 @@ public abstract class ChooseTextField<T> extends BasicTextField {
 	}
 
 	private void createBtn() {
-		choose = new BasicButton(new ImageIcon(GlobalPath.ICON + File.separator + "fldr_obj.gif"));
+		BufferedImage bi = null;
+		try {
+			bi = ImageUtil.createImageIcon(
+					this.getClass().getClassLoader().getResourceAsStream(GlobalPath.ICON + "/fldr_obj.gif"));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		ImageIcon ii = new ImageIcon(bi);
+		choose = new BasicButton(ii);
 		choose.setPreferredSize(new Dimension(GlobalSize.BTNHEIGHT - 5, GlobalSize.BTNHEIGHT - 5));
 		chooseBtnActionListener(choose);
 	}

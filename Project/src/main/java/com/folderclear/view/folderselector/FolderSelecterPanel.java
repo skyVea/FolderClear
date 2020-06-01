@@ -6,12 +6,14 @@ import java.awt.LayoutManager;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 
 import com.folderclear.constant.GlobalColor;
 import com.folderclear.constant.GlobalPath;
 import com.folderclear.constant.GlobalSize;
+import com.folderclear.util.ImageUtil;
 import com.folderclear.view.basic.BasicButton;
 import com.folderclear.view.basic.BasicPanel;
 import com.folderclear.view.basic.ChooseTextField;
@@ -47,7 +49,14 @@ public abstract class FolderSelecterPanel extends BasicPanel {
 	}
 
 	public void createBtn() {
-		addBtn = new BasicButton(new ImageIcon(GlobalPath.ICON + File.separator + "AddIcon.png"));// 添加路径按钮
+		ImageIcon ii = null;
+		try {
+			ii = new ImageIcon(ImageUtil.createImageIcon(
+					this.getClass().getClassLoader().getResourceAsStream(GlobalPath.ICON + "/AddIcon.png")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		addBtn = new BasicButton(ii);// 添加路径按钮
 		addBtnActionListener(addBtn);
 	}
 
