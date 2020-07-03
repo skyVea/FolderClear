@@ -11,4 +11,3 @@ No X11 DISPLAY variable was set, but this program performed an operation which r
         at com.folderclear.view.MainView.main(MainView.java:212)
 		
 4. 打包自动排除 目录
-5. 可删除文件

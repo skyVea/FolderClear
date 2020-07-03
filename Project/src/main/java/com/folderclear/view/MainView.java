@@ -179,8 +179,11 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 					for (int i = 0; i < table.getRowCount(); i++) {
 						String folderPath = (String) table.getValueAt(i, 0);
 						try {
-							bo.delFolder(folderPath);
-						} catch (FCException e2) {
+							boolean isDel = bo.delFile(folderPath);
+							if (!isDel) {
+								throw new FCException("文件删除失败:" + folderPath);
+							}
+						} catch (Exception e2) {
 							stringBuffer.append(e2.getMessage() + "\n");
 						}
 					}
@@ -211,13 +214,13 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 				@Override
 				public void yesAction() {
 					saveBtnAction();
-					saveDefaultPlan();
+					saveDefaultPlan(false);
 					System.exit(0);// 退出
 				}
 
 				@Override
 				public void noAction() {
-					saveDefaultPlan();
+					saveDefaultPlan(false);
 					System.exit(0);// 退出
 				}
 
@@ -227,7 +230,7 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 				}
 			}, "有数据修改,是否保存当前方案？");
 		} else {
-			saveDefaultPlan();
+			saveDefaultPlan(false);
 			System.exit(0);// 退出
 		}
 
@@ -397,7 +400,16 @@ public class MainView extends JFrame implements WindowStateListener, ComponentLi
 		public void cancleAction();
 	}
 
-	private void saveDefaultPlan() {
+	/**
+	 * 是否保存最后一次的plan，作为下次打开时默认plan。目前不支持保存，因为不知道如何<写>运行中的jar内某一文件
+	 * 
+	 * @param b
+	 *            true保存，false不保存
+	 */
+	private void saveDefaultPlan(boolean b) {
+		if (!b) {
+			return;
+		}
 		if (!StringUtils.isEmpty(BO.currentPlanpath) && new File(BO.currentPlanpath).exists()) {
 			ConfigVO vo = new ConfigVO();
 			vo.setDefaultPlan(BO.currentPlanpath);

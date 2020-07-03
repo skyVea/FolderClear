@@ -57,7 +57,7 @@ public abstract class ChooseTextField<T> extends BasicTextField {
 						temppath = null;
 					}
 				}
-				new BasicFileOpenChooser(temppath, null, BasicFileOpenChooser.DIRECTORIES_ONLY) {
+				new BasicFileOpenChooser(temppath, null, BasicFileOpenChooser.FILES_AND_DIRECTORIES) {
 					@Override
 					public void handleOpen(String filepath) {
 						setPreviousPath(filepath);
